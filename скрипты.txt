@@ -1,0 +1,199 @@
+CREATE ROLE "Local_manager" WITH
+	NOLOGIN
+	NOSUPERUSER
+	NOCREATEDB
+	NOCREATEROLE
+	INHERIT
+	NOREPLICATION
+	CONNECTION LIMIT -1;
+	
+CREATE ROLE "Analyst" WITH
+	NOLOGIN
+	NOSUPERUSER
+	NOCREATEDB
+	NOCREATEROLE
+	INHERIT
+	NOREPLICATION
+	CONNECTION LIMIT -1;
+	
+CREATE ROLE "Manager" WITH
+	NOLOGIN
+	NOSUPERUSER
+	NOCREATEDB
+	NOCREATEROLE
+	INHERIT
+	NOREPLICATION
+	CONNECTION LIMIT -1;
+
+CREATE ROLE "Staff" WITH
+	NOLOGIN
+	NOSUPERUSER
+	NOCREATEDB
+	NOCREATEROLE
+	INHERIT
+	NOREPLICATION
+	CONNECTION LIMIT -1;
+
+CREATE ROLE "Administrator" WITH
+	NOLOGIN
+	SUPERUSER
+	CREATEDB
+	CREATEROLE
+	INHERIT
+	NOREPLICATION
+	CONNECTION LIMIT -1;
+
+
+CREATE ROLE "AlexandraFomina@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD '4LJETG';
+GRANT "Staff" TO "AlexandraFomina@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "ValeriaDubinina@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1
+                PASSWORD 'bZhn76';
+GRANT "Staff" TO "ValeriaDubinina@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "LeylaLubimova@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1
+                PASSWORD 'QTydLm';
+GRANT "Staff" TO "LeylaLubimova@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "AlicaBelikova@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1
+               	PASSWORD 'VCzH1j';
+GRANT "Staff" TO "AlicaBelikova@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "PlatonFrolov@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD 'jA2DZu';
+GRANT "Staff" TO "PlatonFrolov@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "UliaVinokyrova@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD '3NOLnx';
+GRANT "Staff" TO "UliaVinokyrova@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "UlianaKozlova@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD '6DmFB5';
+GRANT "Staff" TO "UlianaKozlova@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "RomanZayzev@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD '97PiFL';
+GRANT "Local_manager" TO "RomanZayzev@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "KonstantinSokolov@sotnya.ru"
+                LOGIN
+                SUPERUSER 
+                CREATEDB 
+                CREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD 'zSrhsG';
+GRANT "Administrator" TO "KonstantinSokolov@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "VarvaraAndreeva@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1
+                PASSWORD 't7vPZC';
+GRANT "Manager" TO "VarvaraAndreeva@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "DariaKudryavzeva@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD 'pj4VTb';
+GRANT "Analyst" TO "DariaKudryavzeva@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "MayaSvetsova@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1
+                PASSWORD 'jhJLqb';
+GRANT "Local_manager" TO "MayaSvetsova@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "ArtemSolovev@sotnya.ru"
+                LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD 'XrSJdd';
+GRANT "Local_manager" TO "ArtemSolovev@sotnya.ru" WITH ADMIN OPTION;
+
+CREATE ROLE "AnastasiaMaksimova@sotnya.ru"
+               LOGIN
+                NOSUPERUSER 
+                NOCREATEDB 
+                NOCREATEROLE 
+                INHERIT 
+                NOREPLICATION
+                CONNECTION LIMIT -1 
+                PASSWORD 'KdI8qC';
+GRANT "Local_manager" TO "AnastasiaMaksimova@sotnya.ru" WITH ADMIN OPTION;
