@@ -1,5 +1,6 @@
 package com.example.sotnya.DataBase;
 import com.example.sotnya.Front;
+import com.example.sotnya.Main;
 import com.example.sotnya.PaneModel.*;
 
 import java.io.FileNotFoundException;
@@ -37,7 +38,7 @@ public class Postgre {
         Structure[] mas = new Structure[kol];
         data_resSet = data_statmt.executeQuery("SELECT structure_id, " +
                 "structure_name, address, specialty_name, post_index, tel_number, " +
-                "num_employees \n" + "FROM structure ORDER by structure_id asc;");
+                "num_employees \n" + "FROM structure join specialty using(id_specialty) ORDER by structure_id asc;");
         int i=0;
         while (data_resSet.next()) {
             String t1 = data_resSet.getString("structure_id");
@@ -56,7 +57,9 @@ public class Postgre {
     public static Structure getStructure_byID(String id) throws SQLException, ClassNotFoundException, FileNotFoundException {
         data_resSet = data_statmt.executeQuery("SELECT structure_id, structure_name, address, specialty_name, post_index, tel_number, " +
                 "num_employees \n" +
-                "FROM structure WHERE structure_id = "+ id + ";");
+                "FROM structure " +
+                "JOIN specialty using(id_specialty)" +
+                "WHERE structure_id = "+ id + ";");
         Structure mas = null;
         while (data_resSet.next()) {
             String t1 = data_resSet.getString("structure_id");
@@ -72,12 +75,21 @@ public class Postgre {
         return mas;
         //  System.out.println("-");
     }
+    public static String getID_specialty(String name) throws SQLException {
+        String id ="1";
+        data_resSet = statmt.executeQuery("SELECT * from specialty join structure using(id_specialty) where structure_name = '"+ name+"';");
+        while (data_resSet.next()){
+            id = data_resSet.getString("id_specialty");
+        }
+        return id;
+    }
     public static void UpdateStructure(String id, String t1, String t2, String t3, String t4, String t5, String t6) throws SQLException {
         //System.out.println(t1+"|"+t2+"|"+ t3+"|" + t4);
+        String id_specialty = getID_specialty(t3);
         data_statmt.execute("UPDATE structure " +
                 "set structure_name = '"  + t1 + "'," +
                 " address = '"+ t2 + "'," +
-                " specialty_name = '" + t3 + "'," +
+                " id_specialty = '" + id_specialty + "'," +
                 " post_index = '" + t4 + "'," +
                 " tel_number = '" + t5 + "'," +
                 " num_employees = " + t6 +
@@ -96,7 +108,7 @@ public class Postgre {
         int kol = Integer.parseInt(id);
         Employee[] mas = new Employee[kol];
         data_resSet = data_statmt.executeQuery("SELECT * \n" +
-                "FROM employee ORDER BY employee_id asc;");
+                "FROM employee join employee_post using(id_employee_post) ORDER BY employee_id asc;");
         int i=0;
         while (data_resSet.next()) {
             String t1 = data_resSet.getString("employee_id");
@@ -166,7 +178,7 @@ public class Postgre {
 
     public static Employee getEmployee_byID(String id) throws SQLException, ClassNotFoundException, FileNotFoundException {
         data_resSet = data_statmt.executeQuery("SELECT * \n" +
-                "FROM employee WHERE employee_id = "+ id + ";");
+                "FROM employee join employee_post using(id_employee_post) WHERE employee_id = "+ id + ";");
         Employee mas = null;
         while (data_resSet.next()) {
             String t1 = data_resSet.getString("employee_id");
@@ -184,9 +196,10 @@ public class Postgre {
     }
     public static void UpdateEmployee(String id, String t1, String t2, String t3, String t4,
                                       String t5, String t6, String t7, String t8) throws SQLException {
+        String id_post = getID_employee_post(t2);
         data_statmt.execute("UPDATE employee " +
                 "set employee_name = '"  + t1 + "'," +
-                " employee_post = '"+ t2 + "'," +
+                " id_employee_post = '"+ id_post + "'," +
                 " employee_exp = " + t3 + "," +
                 " employee_inf = '" + t5 + "'," +
                 " employee_age = " + t6 + "," +
@@ -257,19 +270,30 @@ public class Postgre {
     }
 
     public  static void addStructure(String name, String address, String type, String post, String num, String kol_empl) throws SQLException {
+        String id_specialty = getID_specialty(type);
         data_statmt.execute("INSERT INTO public.structure(\n" +
-                "\tstructure_name, address, post_index, tel_number, num_employees, specialty_name)\n" +
-                "\tVALUES ('" + name + "', '" + address + "', '" + post + "', '" + num + "', '" + kol_empl + "', '" + type+"' );");
+                "\tstructure_name, address, post_index, tel_number, num_employees, id_specialty)\n" +
+                "\tVALUES ('" + name + "', '" + address + "', '" + post + "', '" + num + "', '" + kol_empl + "', '" + id_specialty+"' );");
+    }
+    public static String getID_employee_post(String post_name) throws SQLException {
+        String id ="1";
+        data_resSet = statmt.executeQuery("SELECT * FROM employee_post where employee_post = '"+ post_name+"';");
+        while (data_resSet.next()){
+            id = data_resSet.getString("id_employee_post");
+        }
+        return id;
     }
     public  static void addEmployee(String name, String position, String exp, String sal,
                                     String inf,String age,String score, String num, String login, String passSalt, String pass) throws SQLException, FileNotFoundException, ClassNotFoundException {
+        String id_employee_post = getID_employee_post(position);
         statmt.execute("INSERT INTO public.employee(\n" +
-                "\temployee_name, employee_exp, employee_sal, employee_inf, employee_age, employee_score, employee_num, employee_post)\n" +
-                "\tVALUES ('" + name +"', '" + exp + "', '" + sal + "', '" + inf + "', " + age + ", '" + score + "', " + num + ", '" + position +"');");
-        String employee_id = getEmployee_byName(name);
-        statmt.execute("INSERT INTO public.\"user\"(\n" +
-                "\temployee_id, login, password)\n" +
-                "\tVALUES ('" + employee_id + "', '" + login + "', '" + passSalt + "');");
+                "\temployee_name, employee_exp, employee_inf, employee_age, employee_score, employee_num, " +
+                "id_employee_post)\n" +
+                "\tVALUES ('" + name +"', '" + exp + "', '" + inf + "', " + age + ", '" + score + "', " + num +
+                ", '" +id_employee_post +"');");
+        String id_empl = getEmployee_byLogin(num);
+        statmt.execute("INSERT INTO public.\"LoginPass\"(employee_id, login, pass)" +
+                " Values ('"+id_empl+"', '"+ num+"', '"+ passSalt+"';");
         statmt.execute("CREATE ROLE \""+ login  +"\""+
                 "\tLOGIN\n" +
                 "\tNOSUPERUSER\n" +
@@ -309,14 +333,17 @@ public class Postgre {
             statmt.execute("GRANT \"" + lvl + "\" TO \"" + login + "\" WITH ADMIN OPTION;");
         }
         if(fl){
-            statmt.execute("UPDATE \"user\" " +
+            statmt.execute("UPDATE employee " +
+                    "set employee_num = '"  + login + "'" +
+                    " where employee_id = " + id+";");
+            statmt.execute("UPDATE \"LoginPass\" " +
                     "set login = '"  + login + "'" +
                     " where employee_id = " + id+";");
         }
         else {
-            statmt.execute("UPDATE \"user\" " +
-                    "set login = '" + login + "'," +
-                    " password = '" + passSalt + "'" +
+            statmt.execute("UPDATE \"LoginPass\" " +
+                    "set logn = '" + login + "'," +
+                    " pass = '" + passSalt + "'" +
                     " where employee_id = " + id + ";");
             statmt.execute("ALTER ROLE \"" + login + "\"\n" +
                     "\tPASSWORD '" + pass + "';");
@@ -325,15 +352,16 @@ public class Postgre {
 
     public static String getEmployeeLogin_byID(String id) throws SQLException {
         String login ="";
-        data_resSet = statmt.executeQuery("Select login from public.\"user\" where employee_id ='"+ id+"';");
+        data_resSet = statmt.executeQuery("Select employee_num from employee where employee_id ='"+ id+"';");
         while (data_resSet.next()){
-            login = data_resSet.getString("login");
+            login = data_resSet.getString("employee_num");
         }
         return login;
     }
     public static String getEmployeeRole_byID(String id) throws SQLException {
         String role ="";
-        data_resSet = statmt.executeQuery("Select employee_post from public.employee where employee_id ='"+ id+"';");
+        data_resSet = statmt.executeQuery("Select employee_post from employee join public.employee_post using(id_employee_post)" +
+                " where employee_id ='"+ id+"';");
         while (data_resSet.next()){
             role = data_resSet.getString("employee_post");
         }
@@ -355,17 +383,14 @@ public class Postgre {
         statmt.execute("DELETE FROM visit "+
                 " where employee_id = " + t1+";");
         String t2 = getEmployeeLogin_byID(t1);
-        statmt.execute("DELETE FROM \"user\" "+
-                " where employee_id = " + t1+";");
         statmt.execute("DELETE FROM work "+
                 " where employee_id = " + t1+";");
-
         statmt.execute("DELETE FROM employee "+
+                " where employee_id = " + t1+";");
+        statmt.execute("DELETE FROM \"LoginPass\" "+
                 " where employee_id = " + t1+";");
         statmt.execute("DROP ROLE \"" + t2 + "\";");
     }
-
-
     public static String[] getStructure_name() throws SQLException, ClassNotFoundException, FileNotFoundException {
         String r = getLastStructure();
         int kol = Integer.parseInt(r);
@@ -383,16 +408,16 @@ public class Postgre {
     }
 
     public static String[] getService_name(String name) throws SQLException, ClassNotFoundException, FileNotFoundException {
-        statmt = connection.createStatement();
+        String id_specialty = getID_specialty(name);
+        System.out.println("id");
         String r = getLastService();
         int kol = Integer.parseInt(r);
         String[] mas = new String[kol];
         data_resSet = statmt.executeQuery("SELECT * FROM service join manage using(service_id) " +
-                "join public.\"structure\" using (structure_id) where structure_name ='"+ name+"';");
+                "where id_specialty ='"+ id_specialty+"';");
         int i=0;
         while (data_resSet.next()) {
             String t2 = data_resSet.getString("service_name");
-            System.out.println("t2:"+t2);
             mas[i] = t2;
             i++;
         }
@@ -406,17 +431,6 @@ public class Postgre {
             id = data_resSet.getString("count");
         return id;
     }
-
-    public static String getMyName() throws SQLException, ClassNotFoundException, FileNotFoundException {
-        data_resSet = statmt.executeQuery("select * from \"user\"\n" +
-                "join employee using(employee_id) where login ='" + Front.login+"';");
-        String t ="";
-        while (data_resSet.next()) {
-            t = data_resSet.getString("employee_name");
-        }
-        return t;
-    }
-
     public static String getPrice(String name) throws SQLException, ClassNotFoundException, FileNotFoundException {
         statmt = connection.createStatement();
         data_resSet = statmt.executeQuery("SELECT service_price FROM service WHERE service_name = '"+ name + "';");
@@ -427,18 +441,25 @@ public class Postgre {
         return t;
         //  System.out.println("-");
     }
-
     public  static void addVisit(String client_id, String str, String ser, String date,
-                                 String summa, String points) throws SQLException, FileNotFoundException, ClassNotFoundException {
+                                 String summa, String points, String type) throws SQLException, FileNotFoundException, ClassNotFoundException {
         str = getStructure_byNAME(str);
         ser = getService_byNAME(ser);
+        int k = Integer.parseInt(summa);
+        if(type.equals("Внедорожник"))
+            k = (int) (k * 1.4);
+        if(type.equals("Грузовая"))
+            k = (int) (k * 1.6);
+        if(type.equals("Легковая"))
+            k = (int) (k * 1.2);
+        summa = String.valueOf(k);
         String emp = getEmployee_byLogin(Front.login);
         System.out.println(str+"|"+ser+"|"+emp);
         System.out.println(points);
         statmt.execute("INSERT INTO public.visit(\n" +
-                "\tclient_id, structure_id, service_id, data, employee_id, summa, points)\n" +
+                "\tclient_id, structure_id, service_id, data, employee_id, summa, points, car_type)\n" +
                 "\tVALUES (" +  client_id + ", " + str + ", " + ser + ", '" + date + "', " + emp + ", " +
-                summa + ", " + points +");");
+                summa + ", '" + points +"', '"+ type+"');");
     }
 
     public static String getStructure_byNAME(String name) throws SQLException, ClassNotFoundException, FileNotFoundException {
@@ -469,7 +490,7 @@ public class Postgre {
     public static String getEmployee_byLogin(String name) throws SQLException, ClassNotFoundException, FileNotFoundException {
         statmt = connection.createStatement();
         String t="";
-        data_resSet = statmt.executeQuery("SELECT employee_id FROM \"user\" WHERE login = '"+ name+"';");
+        data_resSet = statmt.executeQuery("SELECT employee_id FROM employee WHERE employee_num = '"+ name+"';");
         while (data_resSet.next()) {
             //System.out.println("i:"+i);
             String t1 = data_resSet.getString("employee_id");
@@ -515,7 +536,7 @@ public class Postgre {
         String r = getLastVisit();
         int kol = Integer.parseInt(r);
         Visit[] mas = new Visit[kol];
-        data_resSet = statmt.executeQuery("SELECT visit_id, client_name, structure_name, service_name, \"data\", employee_name, summa, points FROM visit\n" +
+        data_resSet = statmt.executeQuery("SELECT visit_id, client_name, structure_name, service_name, \"data\", employee_name, summa, points, car_type FROM visit\n" +
                 "JOIN client using(client_id)\n" +
                 "JOIN structure using(structure_id)\n" +
                 "JOIN service using(service_id)\n" +
@@ -532,8 +553,9 @@ public class Postgre {
             String t6 = data_resSet.getString("employee_name");
             String t7 = data_resSet.getString("summa");
             String t8 = data_resSet.getString("points");
+            String t9 = data_resSet.getString("car_type");
             //System.out.println(t1 + " | " + t2 + " | " + t3 + " | " + t4);
-            mas[i] = new Visit(t1,t2,t3,t4,t5,t6,t7,t8);
+            mas[i] = new Visit(t1,t2,t3,t4,t5,t6,t7,t8,t9);
             i++;
         }
         System.out.println("-");
@@ -565,7 +587,8 @@ public class Postgre {
             String employeeName = data_resSet.getString("employee_name");
             String summa = data_resSet.getString("summa");
             String points = data_resSet.getString("points");
-            mas = new Visit(id,clientID,structureName,serviceName,data,employeeName,summa,points);
+            String type = data_resSet.getString("car_type");
+            mas = new Visit(id,clientID,structureName,serviceName,data,employeeName,summa,points,type);
         }
         return mas;
     }
@@ -580,9 +603,17 @@ public class Postgre {
     }
 
     public static void UpdateVisit(String visit_id, String client_id, String str, String ser, String date,
-                                   String emp,String summa, String points) throws SQLException, FileNotFoundException, ClassNotFoundException {
+                                   String emp,String summa, String points, String car_type) throws SQLException, FileNotFoundException, ClassNotFoundException {
         str = Postgre.getStructure_byNAME(str);
         ser = Postgre.getService_byNAME(ser);
+        int k = Integer.parseInt(summa);
+        if(car_type.equals("Внедорожник"))
+            k = (int) (k * 1.4);
+        if(car_type.equals("Грузовая"))
+            k = (int) (k * 1.6);
+        if(car_type.equals("Легковая"))
+            k = (int) (k * 1.2);
+        summa = String.valueOf(k);
         // System.out.println(emp);
         emp = Postgre.getEmployee_byName(emp);
         //System.out.println(str+"|"+ ser+"|"+"|"+date+"|"+emp);
@@ -593,6 +624,7 @@ public class Postgre {
                 " data = '" + date + "'," +
                 " employee_id = " + emp + "," +
                 " summa = " + summa + "," +
+                " car_type = '"+ car_type +"'," +
                 " points = " + points +
                 " where visit_id = " + visit_id+";");
     }
@@ -632,13 +664,6 @@ public class Postgre {
                 "\t )\n" +
                 "\t TO 'D:\\postgreSQL\\avg_employee.csv' CSV HEADER\n" +
                 "\t DELIMITER '|' ENCODING 'WIN1251';");
-    }
-    public static void task3() throws SQLException {
-        statmt.execute("COPY (SELECT sum(summa) as \"Общий доход\"\n" +
-                "    FROM visit\n" +
-                "\t  )\n" +
-                "    TO 'D:\\postgreSQL\\all_capital.csv' CSV HEADER\n" +
-                "    DELIMITER '|' ENCODING 'WIN1251';");
     }
 
     public static Service[] getService() throws SQLException, ClassNotFoundException, FileNotFoundException {

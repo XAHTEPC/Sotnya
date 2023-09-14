@@ -421,13 +421,14 @@ public class Employee {String id;
 
         TextField tel = new TextField();
         tel.setBackground(null);
+        if(!flagAdmin)
+            tel.setEditable(false);
         tel.setLayoutX(180);
         tel.setLayoutY(422);
         tel.setText(el.num);
         tel.setMaxHeight(32);
         tel.setMaxWidth(215);
 
-        TextField login = new TextField();
         TextField pass = new TextField();
 
         Button save = new Button();
@@ -441,12 +442,6 @@ public class Employee {String id;
         del.setLayoutY(464);
         del.setPrefSize(150,32);
         if(flagAdmin) {
-            login.setBackground(null);
-            login.setLayoutX(180);
-            login.setLayoutY(466);
-            login.setMaxHeight(32);
-            login.setText(log);
-            login.setMaxWidth(215);
             pass.setBackground(null);
             pass.setLayoutX(180);
             pass.setLayoutY(510);
@@ -455,7 +450,7 @@ public class Employee {String id;
             save.setLayoutY(548);
             save.setLayoutX(30);
             del.setLayoutY(548);
-            root_add.getChildren().addAll(login,pass);
+            root_add.getChildren().addAll(pass);
         }
 
         String finalId = id;
@@ -463,7 +458,7 @@ public class Employee {String id;
             String t1,t2,t3,t4,t5,t6,t7,t8,t9,t10, passSalt;
             t1 = name.getText();
             t2 = position.getText();
-            String lvl="Стилист";
+            String lvl="Работник";
             if(t2.equals("Администратор"))
                 lvl = "Администратор";
             else if(t2.equals("Аналитик"))
@@ -478,7 +473,6 @@ public class Employee {String id;
             t6 = age.getText();
             t7 = score.getText();
             t8 = tel.getText();
-            t9 = login.getText();
             t10 = pass.getText();
             passSalt = Crypto.hash(t10);
             String oldRole;
@@ -497,7 +491,7 @@ public class Employee {String id;
             boolean flag = t10.isEmpty();
             if(flagAdmin){
                 try {
-                    Postgre.UpdateUser(finalId,t9,t10,passSalt, t2, flag, oldRole);
+                    Postgre.UpdateUser(finalId,t8,t10,passSalt, t2, flag, oldRole);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -625,15 +619,6 @@ public class Employee {String id;
             String t1,t2,t3,t4,t5,t6,t7,t8,t9,t10, passSalt;
             t1 = name.getText();
             t2 = position.getText();
-            String lvl="Стилист";
-            if(t2.equals("Администратор"))
-                lvl = "Администратор";
-            else if(t2.equals("Аналитик"))
-                lvl = "Аналитик";
-            else  if(t2.equals("Управляющий"))
-                lvl = "Управляющий";
-            else if(t2.equals("Менеджер"))
-                lvl = "Менеджер";
             t3 = exp.getText();
             t4 = sal.getText();
             t5 = inf.getText();
@@ -646,7 +631,7 @@ public class Employee {String id;
             if(!t1.isEmpty()&&!t2.isEmpty()&&!t3.isEmpty()&&!t4.isEmpty()&&!t6.isEmpty()&&!t7.isEmpty()&&
                     !t8.isEmpty()&&!t9.isEmpty()&&!t10.isEmpty()) {
                 try {
-                    Postgre.addEmployee(t1, lvl, t3, t4, t5, t6,t7,t8,t9,passSalt,t10);
+                    Postgre.addEmployee(t1, t2, t3, t4, t5, t6,t7,t8,t9,passSalt,t10);
                     Pane p = Employee.getPane(true,false, true);
                     ScrollFront.scrollPane.setContent(p);
                 } catch (SQLException ex) {

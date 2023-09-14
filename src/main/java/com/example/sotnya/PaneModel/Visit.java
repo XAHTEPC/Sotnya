@@ -36,8 +36,9 @@ public class Visit {String id;
     static boolean flag;
     static String Name="Чистенько";
     static  String[] mas3={""};
+    String type;
     public Visit(String id, String client_name, String structure_name,
-                 String service_name, String data, String employee_name, String summa, String points) {
+                 String service_name, String data, String employee_name, String summa, String points, String type) {
         this.id = id;
         this.client_name = client_name;
         this.structure_name = structure_name;
@@ -46,6 +47,7 @@ public class Visit {String id;
         this.employee_name = employee_name;
         this.summa = summa;
         this.points = points;
+        this.type = type;
     }
 
     public static Pane getPane(boolean fl) throws SQLException, FileNotFoundException, ClassNotFoundException {
@@ -293,29 +295,40 @@ public class Visit {String id;
         points.setMaxHeight(32);
         points.setMaxWidth(215);
 
+        String[] mas_car = {"Внедорожник","Легковая","Грузовая","Мотоцикл"};
+        ObservableList<String> car = FXCollections.observableArrayList(mas_car);
+        ComboBox<String> comboBox4 = new ComboBox<String>(car);
+        comboBox4.setMaxWidth(215);
+        comboBox4.setValue(visit.type);
+        comboBox4.setMinWidth(215);
+        comboBox4.setBackground(null);
+        comboBox4.setLayoutX(180);
+        comboBox4.setLayoutY(330);
+
         Button save = new Button();
         save.setLayoutX(33);
-        save.setLayoutY(344);
+        save.setLayoutY(363);
         save.setBackground(null);
         save.setPrefSize(150,32);
 
         Button del = new Button();
         del.setBackground(null);
-        del.setLayoutX(216);
-        del.setLayoutY(344);
+        del.setLayoutX(220);
+        del.setLayoutY(363);
         del.setPrefSize(150,32);
         root_add.getChildren().addAll(del,save);
 
         String finalId_visit = id;
         save.setOnAction(x ->{
-            String t1,t2,t3,t4,t5,t6,t7 = "";
+            String t1,t2,t3,t4,t5,t6,t7 = "",t8;
             t1 = name.getText();
             t2 = comboBox2.getSelectionModel().getSelectedItem();
             t3 = comboBox3.getSelectionModel().getSelectedItem();
             t4 = DATA.getText();
             t5 = emp.getText();
             t6 = points.getText();
-            if(chechPos(t4,t6)) {
+            t8 = comboBox4.getSelectionModel().getSelectedItem();
+            {
                 try {
                     t7 = Postgre.getPrice(t3);
                 } catch (SQLException e) {
@@ -326,7 +339,7 @@ public class Visit {String id;
                     throw new RuntimeException(e);
                 }
                 try {
-                    Postgre.UpdateVisit(finalId_visit, visit.client_name, t2, t3, t4, t5, t7, t6);
+                    Postgre.UpdateVisit(finalId_visit, visit.client_name, t2, t3, t4, t5, t7, t6, t8);
                     Pane p = Visit.getPane(flag);
                     ScrollFront.scrollPane.setContent(p);
                 } catch (SQLException ex) {
@@ -338,7 +351,6 @@ public class Visit {String id;
                 }
                 newWindow.close();
             }
-            name.setText("Проверьте данные");
         });
 
         del.setOnAction(va ->{
@@ -355,7 +367,7 @@ public class Visit {String id;
             }
             newWindow.close();
         });
-        root_add.getChildren().addAll(name,emp,comboBox2,comboBox3);
+        root_add.getChildren().addAll(name,emp,comboBox2,comboBox3, comboBox4);
         root_add.getChildren().addAll(DATA, points);
         newWindow.setTitle("Редактирование посещения");
         newWindow.setScene(scene_add);

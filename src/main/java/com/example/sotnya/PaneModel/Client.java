@@ -385,7 +385,7 @@ public class Client {
 static ObservableList<String> service = FXCollections.observableArrayList(mas2);
     public static void add_pos(String id, boolean flagStaff) throws SQLException, FileNotFoundException, ClassNotFoundException {
         Group root_add = new Group();
-        Scene scene_add = new Scene(root_add, 410, 410);
+        Scene scene_add = new Scene(root_add, 418, 418);
         Stage newWindow = new Stage();
         newWindow.initStyle(StageStyle.DECORATED);
         Client el = Postgre.getClient_byID(id);
@@ -416,6 +416,15 @@ static ObservableList<String> service = FXCollections.observableArrayList(mas2);
         comboBox2.setBackground(null);
         comboBox2.setLayoutX(180);
         comboBox2.setLayoutY(110);
+
+        String[] mas_car = {"Внедорожник","Легковая","Грузовая","Мотоцикл"};
+        ObservableList<String> car = FXCollections.observableArrayList(mas_car);
+        ComboBox<String> comboBox4 = new ComboBox<String>(car);
+        comboBox4.setMaxWidth(215);
+        comboBox4.setMinWidth(215);
+        comboBox4.setBackground(null);
+        comboBox4.setLayoutX(175);
+        comboBox4.setLayoutY(326);
 
         comboBox2.valueProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -475,16 +484,17 @@ static ObservableList<String> service = FXCollections.observableArrayList(mas2);
 
         Button save = new Button();
         save.setLayoutX(116);
-        save.setLayoutY(344);
+        save.setLayoutY(363);
         save.setBackground(null);
         save.setPrefSize(150,32);
 
         String finalId_visit = id;
         save.setOnAction(x ->{
-            String t1,t2,t3,t4,t5,t6,t7 = "";
+            String t1,t2,t3,t4,t5,t6,t7 = "",t8;
             t1 = name.getText();
             t2 = comboBox2.getSelectionModel().getSelectedItem();
             t3 = comboBox3.getSelectionModel().getSelectedItem();
+            t8 = comboBox4.getSelectionModel().getSelectedItem();
             t4 = DATA.getText();
             t5 = emp.getText();
             t6 = points.getText();
@@ -499,7 +509,7 @@ static ObservableList<String> service = FXCollections.observableArrayList(mas2);
                     throw new RuntimeException(e1);
                 }
                 try {
-                    Postgre.addVisit(finalId_visit, t2, t3, t4, t7, t6);
+                    Postgre.addVisit(finalId_visit, t2, t3, t4, t7, t6,t8);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 } catch (FileNotFoundException e1) {
@@ -511,7 +521,7 @@ static ObservableList<String> service = FXCollections.observableArrayList(mas2);
             }
             name.setText("Проверьте данные");
         });
-        root_add.getChildren().addAll(name,emp,comboBox2,comboBox3);
+        root_add.getChildren().addAll(name,emp,comboBox2,comboBox3,comboBox4);
         root_add.getChildren().addAll(DATA, points, save);
         newWindow.setTitle("Добавить посещение");
         newWindow.setScene(scene_add);

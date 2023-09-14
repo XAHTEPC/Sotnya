@@ -29,9 +29,9 @@ public class LocalManagerFront {
 
         Button structure = new Button();
         structure.setBackground(null);
-        structure.setLayoutY(242);
-        structure.setLayoutX(37);
-        structure.setPrefSize(236,25);
+        structure.setLayoutY(364);
+        structure.setLayoutX(379);
+        structure.setPrefSize(450,75);
         pane.getChildren().add(structure);
         structure.setOnAction(t ->{
             try {
@@ -50,9 +50,9 @@ public class LocalManagerFront {
 
         Button employee = new Button();
         employee.setBackground(null);
-        employee.setLayoutX(24);
-        employee.setLayoutY(142);
-        employee.setPrefSize(262,25);
+        employee.setLayoutX(379);
+        employee.setLayoutY(264);
+        employee.setPrefSize(450,75);
         pane.getChildren().add(employee);
         employee.setOnAction(t1 ->{
             try {
